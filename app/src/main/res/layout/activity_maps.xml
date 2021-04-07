@@ -44,6 +44,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/anon_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Anonymization result:"
+            android:textSize="20sp"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:id="@+id/anon_lat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/anon_lng"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -51,60 +71,94 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/map"
         android:layout_alignParentRight="true"
-        android:gravity="center"
         android:background="#BFFFFFFF"
+        android:gravity="center"
         android:orientation="vertical"
         android:padding="2dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_gravity="right"
+            android:orientation="horizontal"
+            android:paddingStart="10dp">
+
             <TextView
                 android:id="@+id/tv_interval"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:text="Update interval:"/>
+                android:text="Update interval (ms):"
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/et_interval"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:inputType="numberSigned"
+                android:hint="10000"
                 android:imeOptions="actionDone"
+                android:inputType="numberSigned"
                 android:longClickable="false"
                 android:maxLength="7"
-                android:hint="10000"
-                android:text="10000"/>
+                android:text="10000"
+                android:textSize="14sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_gravity="right"
+            android:orientation="horizontal"
+            android:paddingStart="10dp">
 
             <TextView
                 android:id="@+id/tv_fast_interval"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:text="Update fast interval:"/>
+                android:text="Update fast interval (ms):"
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/et_fast_interval"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minWidth="10dp"
-                android:textSize="14sp"
-                android:inputType="numberSigned"
+                android:hint="5000"
                 android:imeOptions="actionDone"
+                android:inputType="numberSigned"
                 android:longClickable="false"
                 android:maxLength="7"
-                android:hint="5000"
-                android:text="5000"/>
+                android:minWidth="10dp"
+                android:text="5000"
+                android:textSize="14sp" />
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:orientation="horizontal"
+            android:paddingStart="10dp">
+
+            <TextView
+                android:id="@+id/anon_radius_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Anonymization Cluster Radius (m):"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/anon_radius"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="400"
+                android:imeOptions="actionDone"
+                android:inputType="numberSigned"
+                android:longClickable="false"
+                android:maxLength="4"
+                android:minWidth="10dp"
+                android:text="400"
+                android:textSize="14sp" />
+        </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>
