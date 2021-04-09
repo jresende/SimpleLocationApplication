@@ -33,14 +33,21 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import inconnu.anonymization.core.databases.dynamic.GeoIndistinguishabilityLaplaceCluster;
+import inconnu.anonymization.core.databases.dynamic.GeoIndistinguishabilityLaplaceSimple;
+import inconnu.anonymization.core.databases.dynamic.utils.GeoLocationPoint;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private MarkerOptions mMarkerOptions;
+    private MarkerOptions mMarkerOptionsAnon;
 
     private FusedLocationProviderClient fusedLocationClient;
     private LocationRequest locationRequest;
@@ -48,6 +55,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean permissionCoarseLocation;
 
     Marker mMarker;
+    Marker mMarkerAnon;
 
     RelativeLayout rl_layout;
 
@@ -62,6 +70,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private boolean zoomed = false;
 
+    private double clusterRadius=400;
+    private double anonL = 0.60;
+
+
+
+    GeoIndistinguishabilityLaplaceCluster geoIndistinguishabilityLaplaceCluster;
+//    GeoIndistinguishabilityLaplaceSimple geoIndistinguishabilityLaplaceSimple;
+
+
     private final String TAG = "SimpleLocationApp";
 
     private final int PERMISSION_REQUEST_LOCATION = 30;
@@ -70,6 +87,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+         geoIndistinguishabilityLaplaceCluster = new GeoIndistinguishabilityLaplaceCluster(clusterRadius,anonL);
+//        geoIndistinguishabilityLaplaceSimple = new GeoIndistinguishabilityLaplaceSimple(clusterRadius,anonL);
         rl_layout = findViewById(R.id.rl_layout);
         tv_lat = findViewById(R.id.tv_lat);
         tv_lng = findViewById(R.id.tv_lng);
@@ -123,6 +143,65 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
         fast_interval = Integer.parseInt(et_fast_interval.getText().toString());
+
+
+        ((EditText) findViewById(R.id.anon_radius)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.toString().isEmpty() || Double.parseDouble(editable.toString())==0){
+                    geoIndistinguishabilityLaplaceCluster = new GeoIndistinguishabilityLaplaceCluster(400,anonL);
+//                    geoIndistinguishabilityLaplaceSimple = new GeoIndistinguishabilityLaplaceSimple(400,anonL);
+                    clusterRadius = 400;
+                }else {
+                    clusterRadius = Double.parseDouble(editable.toString());
+                    geoIndistinguishabilityLaplaceCluster = new GeoIndistinguishabilityLaplaceCluster(clusterRadius,anonL);
+//                    geoIndistinguishabilityLaplaceSimple = new GeoIndistinguishabilityLaplaceSimple( clusterRadius,anonL);
+                    Log.d(TAG,"Radius: "+clusterRadius);
+                }
+            }
+
+        });
+
+        ((EditText) findViewById(R.id.anon_l)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.toString().isEmpty() || Double.parseDouble(editable.toString())==0.0){
+                    geoIndistinguishabilityLaplaceCluster = new GeoIndistinguishabilityLaplaceCluster(clusterRadius,0.60);
+//                    geoIndistinguishabilityLaplaceSimple = new GeoIndistinguishabilityLaplaceSimple(clusterRadius,0.60);
+                    anonL = 0.60;
+                }else {
+                    anonL = Double.parseDouble(editable.toString());
+                    geoIndistinguishabilityLaplaceCluster = new GeoIndistinguishabilityLaplaceCluster(clusterRadius,anonL);
+//                    geoIndistinguishabilityLaplaceSimple = new GeoIndistinguishabilityLaplaceSimple(clusterRadius,anonL);
+                    Log.d(TAG,"L: "+anonL);
+                }
+            }
+        });
+
+
+
+
+
         locationRequest = LocationRequest.create();
         locationRequest.setInterval(interval)
                 .setFastestInterval(fast_interval)
@@ -137,12 +216,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if(lastLatLng != null){
                     tv_lat.setText("Lat: " + lastLatLng.latitude);
                     tv_lng.setText("Lng: " + lastLatLng.longitude);
+                    GeoLocationPoint geoLocationPoint = geoIndistinguishabilityLaplaceCluster.sanitizeNewPoint(new GeoLocationPoint(lastLatLng.latitude, lastLatLng.longitude));
+//                    GeoLocationPoint geoLocationPoint = geoIndistinguishabilityLaplaceSimple.sanitizePoint(new GeoLocationPoint(lastLatLng.latitude,lastLatLng.longitude));
+                    ((TextView) findViewById(R.id.anon_lat)).setText("Lat: "+geoLocationPoint.latitude);
+                    ((TextView) findViewById(R.id.anon_lng)).setText("Lng: "+geoLocationPoint.longitude);
+
                     if(!zoomed){
                         Log.d(TAG,"First location");
                         mMarkerOptions = new MarkerOptions().position(lastLatLng).title("You are here!");
                         mMarker = mMap.addMarker(mMarkerOptions);
-                        mMarker.showInfoWindow();
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLatLng,17));
+
+
+                        mMarkerOptionsAnon = new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(120)).position(new LatLng(geoLocationPoint.latitude,geoLocationPoint.longitude)).title("Anonymized Position");
+                        mMarkerAnon = mMap.addMarker(mMarkerOptionsAnon);
+//                        mMarkerAnon.showInfoWindow();
+
+
+
+                        LatLngBounds latLngBounds = new LatLngBounds.Builder()
+                                .include(lastLatLng)
+                                .include(new LatLng(geoLocationPoint.latitude,geoLocationPoint.longitude))
+                                .build();
+
+
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,300));
                         zoomed = true;
                     } else {
                         Location lastLoc = new Location("LastLoc");
@@ -152,11 +249,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         mMarker.remove();
                         mMarkerOptions = new MarkerOptions().position(lastLatLng).title("You are here!");
                         mMarker = mMap.addMarker(mMarkerOptions);
-                        mMarker.showInfoWindow();
+
+
+                        mMarkerAnon.remove();
+                        mMarkerOptionsAnon = new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(120)).position(new LatLng(geoLocationPoint.latitude,geoLocationPoint.longitude)).title("Anonymized Position");
+                        mMarkerAnon = mMap.addMarker(mMarkerOptionsAnon);
+//                        mMarkerAnon.showInfoWindow();
+
+
+
+                        LatLngBounds latLngBounds = new LatLngBounds.Builder()
+                                .include(lastLatLng)
+                                .include(new LatLng(geoLocationPoint.latitude,geoLocationPoint.longitude))
+                                .build();
+
+
                         Location newLoc = new Location("NewLoc");
                         newLoc.setLatitude(lastLatLng.latitude);
                         newLoc.setLongitude(lastLatLng.longitude);
-                        if(lastLoc.distanceTo(newLoc) >= 1000) mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLatLng,17)); //Move camera if distance greater than 1000 meeter
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds,300));
                     }
                 }
 
