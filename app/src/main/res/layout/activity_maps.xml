@@ -81,7 +81,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:orientation="horizontal"
-            android:paddingStart="10dp">
+            android:paddingStart="10dp"
+            android:paddingEnd="17dp">
 
             <TextView
                 android:id="@+id/tv_interval"
@@ -108,7 +109,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:orientation="horizontal"
-            android:paddingStart="10dp">
+            android:paddingStart="10dp"
+            android:paddingEnd="17dp">
 
             <TextView
                 android:id="@+id/tv_fast_interval"
@@ -136,7 +138,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:orientation="horizontal"
-            android:paddingStart="10dp">
+            android:paddingStart="10dp"
+            android:paddingEnd="17dp">
 
             <TextView
                 android:id="@+id/anon_radius_label"
@@ -151,7 +154,7 @@
                 android:layout_height="wrap_content"
                 android:hint="400"
                 android:imeOptions="actionDone"
-                android:inputType="numberSigned"
+                android:inputType="numberDecimal"
                 android:longClickable="false"
                 android:maxLength="4"
                 android:minWidth="10dp"
@@ -159,6 +162,99 @@
                 android:textSize="14sp" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:orientation="horizontal"
+            android:paddingStart="10dp"
+            android:paddingEnd="17dp">
+
+            <TextView
+                android:id="@+id/anon_l_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Anonymization Indistinguishability 'l': "
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/anon_l"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="0.60"
+                android:imeOptions="actionDone"
+                android:inputType="numberDecimal"
+                android:longClickable="false"
+                android:maxLength="4"
+                android:minWidth="10dp"
+                android:text="0.60"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/map"
+        android:layout_alignParentLeft="true"
+        android:background="#BFFFFFFF"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="2dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="Labels: "/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <LinearLayout
+                android:layout_width="13dp"
+                android:layout_height="13dp"
+                android:orientation="horizontal"
+                android:background="#ff0000"
+                >
+            </LinearLayout >
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="8dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11dp"
+                android:text="Real Location"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <LinearLayout
+                android:layout_width="13dp"
+                android:layout_height="13dp"
+                android:orientation="horizontal"
+                android:background="#00C300"
+                >
+            </LinearLayout >
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="8dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11dp"
+                android:text="Anonymization Result"/>
+        </LinearLayout>
     </LinearLayout>
 
 </RelativeLayout>
